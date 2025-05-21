@@ -21,10 +21,10 @@ type SidebarProps = {
   userName?: string;
   userAvatar?: string;
 };
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  // const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 
-export default function Sidebar({ userName = user.name, userAvatar = "https://i.pinimg.com/736x/59/af/9c/59af9cd100daf9aa154cc753dd58316d.jpg" }: SidebarProps) {
+export default function Sidebar({ userName = "hey", userAvatar = "https://i.pinimg.com/736x/59/af/9c/59af9cd100daf9aa154cc753dd58316d.jpg" }: SidebarProps) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);

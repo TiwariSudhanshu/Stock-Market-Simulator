@@ -36,8 +36,8 @@ const userLogin = async (e: React.FormEvent) => {
 
 
     if (res.ok) {
-      const { name, email, mobileNo, enrollment } = data.user;
-      localStorage.setItem("user", JSON.stringify({ name, email, mobileNo, enrollment }));
+      const { name, email, mobileNo, enrollment, userId } = data.user;
+      localStorage.setItem("user", JSON.stringify({ name, email, mobileNo, enrollment, userId }));
       alert("User login successful!");
       window.location.href = "/dashboard";
     } else {

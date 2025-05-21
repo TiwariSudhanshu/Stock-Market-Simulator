@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
 import User from "@/models/User.models";
 import connectDB from "@/lib/connectDB";
 
@@ -27,6 +26,7 @@ export async function POST(req: NextRequest) {
         email: user.email,
         mobileNo: user.mobileNo,
         enrollment: user.enrollment,
+        userId: user._id
       },
     });
   } catch (error) {

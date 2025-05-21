@@ -8,25 +8,26 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json();
 
+    // Destructure the required fields
+    const { companyName, userId, action, noOfShares, pricePerShare, esgValue, timestamp } = data;
+    console.log('Received data:', data);
     // Basic validation
-    const { company, participant, round, tradeType, quantity, price, tradeTime } = data;
-
-    if (!company || !participant || !round || !tradeType || !quantity || !price || !tradeTime) {
+    if (!companyName || !userId || !action || !noOfShares || !pricePerShare || !esgValue || !timestamp) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 
-    if (!['buy', 'sell'].includes(tradeType)) {
-      return NextResponse.json({ error: 'tradeType must be either "buy" or "sell".' }, { status: 400 });
+    if (!['buy', 'sell'].includes(action)) {
+      return NextResponse.json({ error: 'action must be either "buy" or "sell".' }, { status: 400 });
     }
 
     const trade = new Trade({
-      company,
-      participant,
-      round,
-      tradeType,
-      quantity,
-      price,
-      tradeTime: new Date(tradeTime), // ensure date type
+      companyName,
+      userId,
+      action,
+      noOfShares,
+      pricePerShare,
+      esgValue,
+      timestamp: new Date(timestamp), // ensure it's stored as a Date
     });
 
     await trade.save();

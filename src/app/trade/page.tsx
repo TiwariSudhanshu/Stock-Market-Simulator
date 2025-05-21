@@ -1,7 +1,3 @@
-// The Sidebar component is already created at @/components/sidebar
-// We'll just import it as needed in our trade form
-
-// app/trade/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -10,14 +6,26 @@ import Sidebar from '@/components/Sidebar';
 export default function TradePage() {
   const [formData, setFormData] = useState({
     companyName: '',
-    tradeType: 'buy',
-    numberOfShares: 0,
+    action: 'buy',
+    noOfShares: 0,
     pricePerShare: 0,
     totalAmount: 0,
-    esgScore: 50,
-    agreement: false
+    esgValue: 50,
   });
+const [userId, setUserId] = useState(() => {
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    try {
+      const user = JSON.parse(storedUser);
+      return user.userId || '';
+    } catch (e) {
+      console.error('Failed to parse user from localStorage:', e);
+    }
+  }
+  return '';
+});
 
+  const [agreement, setAgreement] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
@@ -25,11 +33,7 @@ export default function TradePage() {
     const { name, value, type } = e.target;
     
     if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData({
-        ...formData,
-        [name]: checked
-      });
+      setAgreement((e.target as HTMLInputElement).checked);
       return;
     }
 
@@ -38,8 +42,8 @@ export default function TradePage() {
       const numValue = value === '' ? 0 : parseFloat(value);
       
       // Calculate total amount when shares or price changes
-      if (name === 'numberOfShares' || name === 'pricePerShare') {
-        const shares = name === 'numberOfShares' ? numValue : formData.numberOfShares;
+      if (name === 'noOfShares' || name === 'pricePerShare') {
+        const shares = name === 'noOfShares' ? numValue : formData.noOfShares;
         const price = name === 'pricePerShare' ? numValue : formData.pricePerShare;
         
         setFormData({
@@ -64,7 +68,7 @@ export default function TradePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.agreement) {
+    if (!agreement) {
       setSubmitMessage('Please agree to the terms first');
       return;
     }
@@ -73,12 +77,23 @@ export default function TradePage() {
     setSubmitMessage('');
     
     try {
-      const response = await fetch('/api/trade', {
+      // Prepare the data according to the API schema
+      const tradeData = {
+        companyName: formData.companyName,
+        userId:userId,// Assuming userId is stored in localStorage
+        action: formData.action,
+        noOfShares: formData.noOfShares,
+        pricePerShare: formData.pricePerShare,
+        esgValue: formData.esgValue,
+        timestamp: new Date().toISOString(),
+      };
+      
+      const response = await fetch('/api/submitTrade', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(tradeData),
       });
       
       const data = await response.json();
@@ -88,15 +103,15 @@ export default function TradePage() {
         // Reset form
         setFormData({
           companyName: '',
-          tradeType: 'buy',
-          numberOfShares: 0,
+          action: 'buy',
+          noOfShares: 0,
           pricePerShare: 0,
           totalAmount: 0,
-          esgScore: 50,
-          agreement: false
+          esgValue: 50,
         });
+        setAgreement(false);
       } else {
-        setSubmitMessage(`Error: ${data.message || 'Failed to submit trade'}`);
+        setSubmitMessage(`Error: ${data.error || 'Failed to submit trade'}`);
       }
     } catch (error) {
       setSubmitMessage('Network error. Please try again.');
@@ -138,9 +153,9 @@ export default function TradePage() {
                 <label className="flex items-center">
                   <input
                     type="radio"
-                    name="tradeType"
+                    name="action"
                     value="buy"
-                    checked={formData.tradeType === 'buy'}
+                    checked={formData.action === 'buy'}
                     onChange={handleInputChange}
                     className="mr-2"
                   />
@@ -149,9 +164,9 @@ export default function TradePage() {
                 <label className="flex items-center">
                   <input
                     type="radio"
-                    name="tradeType"
+                    name="action"
                     value="sell"
-                    checked={formData.tradeType === 'sell'}
+                    checked={formData.action === 'sell'}
                     onChange={handleInputChange}
                     className="mr-2"
                   />
@@ -161,14 +176,14 @@ export default function TradePage() {
             </div>
             
             <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2" htmlFor="numberOfShares">
+              <label className="block text-gray-700 font-medium mb-2" htmlFor="noOfShares">
                 Number of Shares
               </label>
               <input
                 type="number"
-                id="numberOfShares"
-                name="numberOfShares"
-                value={formData.numberOfShares || ''}
+                id="noOfShares"
+                name="noOfShares"
+                value={formData.noOfShares || ''}
                 onChange={handleInputChange}
                 min="1"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -208,16 +223,16 @@ export default function TradePage() {
             </div>
             
             <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2" htmlFor="esgScore">
-                ESG Score: {formData.esgScore}
+              <label className="block text-gray-700 font-medium mb-2" htmlFor="esgValue">
+                ESG Score: {formData.esgValue}
               </label>
               <input
                 type="range"
-                id="esgScore"
-                name="esgScore"
+                id="esgValue"
+                name="esgValue"
                 min="0"
                 max="100"
-                value={formData.esgScore}
+                value={formData.esgValue}
                 onChange={handleInputChange}
                 className="w-full"
               />
@@ -233,7 +248,7 @@ export default function TradePage() {
                 <input
                   type="checkbox"
                   name="agreement"
-                  checked={formData.agreement}
+                  checked={agreement}
                   onChange={handleInputChange}
                   className="mr-2"
                   required
@@ -252,60 +267,14 @@ export default function TradePage() {
             
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !agreement}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {isSubmitting ? 'Processing...' : `${formData.tradeType === 'buy' ? 'Buy' : 'Sell'} Shares`}
+              {isSubmitting ? 'Processing...' : `${formData.action === 'buy' ? 'Buy' : 'Sell'} Shares`}
             </button>
           </form>
         </div>
       </div>
     </div>
   );
-}
-
-// Let's create the API endpoint for processing trades
-// app/api/trade/route.ts
-import { NextResponse } from 'next/server';
-
-export async function POST(request: Request) {
-  try {
-    const data = await request.json();
-    
-    // Validate the data
-    if (!data.companyName) {
-      return NextResponse.json({ message: 'Company name is required' }, { status: 400 });
-    }
-    
-    if (data.numberOfShares <= 0) {
-      return NextResponse.json({ message: 'Number of shares must be positive' }, { status: 400 });
-    }
-    
-    if (data.pricePerShare <= 0) {
-      return NextResponse.json({ message: 'Price per share must be positive' }, { status: 400 });
-    }
-    
-    if (!data.agreement) {
-      return NextResponse.json({ message: 'You must agree to the terms' }, { status: 400 });
-    }
-    
-    // In a real app, we would process the trade here
-    // For example, connect to a database, payment processor, etc.
-    
-    // For now, we'll just simulate a delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Return success response
-    return NextResponse.json({ 
-      message: 'Trade processed successfully',
-      tradeId: `T-${Date.now()}`,
-      tradeDetails: {
-        ...data,
-        timestamp: new Date().toISOString()
-      }
-    });
-  } catch (error) {
-    console.error('Error processing trade:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
-  }
 }
