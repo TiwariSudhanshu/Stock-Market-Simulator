@@ -20,6 +20,6 @@ const CompanySchema: Schema = new Schema({
 });
 
 
-const Company: Model<ICompany> = model<ICompany>('Company', CompanySchema);
+const Company: Model<ICompany> = mongoose.models.Company ||  model<ICompany>('Company', CompanySchema);
 
 export default Company;

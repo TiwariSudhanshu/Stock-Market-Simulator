@@ -24,6 +24,6 @@ const TradeSchema: Schema = new Schema({
   timestamps: true,
 });
 
-const Trade: Model<ITrade> = model<ITrade>('Trade', TradeSchema);
+const Trade: Model<ITrade> = mongoose.models.Trade || model<ITrade>('Trade', TradeSchema);
 
 export default Trade;

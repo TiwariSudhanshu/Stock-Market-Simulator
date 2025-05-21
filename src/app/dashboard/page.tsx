@@ -41,12 +41,7 @@ const mockPortfolioData = {
     { id: 7, company: 'CircuitEco', sector: 'Sustainable Tech', shares: 25, avgBuyPrice: 56.25, currentPrice: 64.30, totalValue: 1607.50, esgScore: 7.5, dayChange: 1.8 },
     { id: 8, company: 'FarmFresh Organics', sector: 'Eco-Agriculture', shares: 20, avgBuyPrice: 28.75, currentPrice: 34.40, totalValue: 688.00, esgScore: 9.3, dayChange: 5.6 },
   ],
-  recentTrades: [
-    { id: 101, company: 'SolarPeak Energy', action: 'BUY', shares: 5, price: 80.25, total: 401.25, date: '2025-05-18T14:23:15' },
-    { id: 102, company: 'AutoDrive Electric', action: 'SELL', shares: 3, price: 87.50, total: 262.50, date: '2025-05-17T10:45:32' },
-    { id: 103, company: 'EcoMobility', action: 'BUY', shares: 10, price: 91.20, total: 912.00, date: '2025-05-15T16:12:08' },
-    { id: 104, company: 'RecycleNow', action: 'BUY', shares: 15, price: 37.75, total: 566.25, date: '2025-05-12T09:30:45' }
-  ],
+
   roundInfo: {
     current: 3,
     total: 5,
@@ -283,19 +278,7 @@ const formatDate = (dateString: any) => {
                   Holdings
                 </div>
               </button>
-              <button
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'trades' 
-                    ? 'border-green-500 text-green-600' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-                onClick={() => setActiveTab('trades')}
-              >
-                <div className="flex items-center">
-                  <TrendingUp size={16} className="mr-2" />
-                  Recent Trades
-                </div>
-              </button>
+             
             </nav>
           </div>
 
@@ -504,34 +487,7 @@ const formatDate = (dateString: any) => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {portfolioData.recentTrades.map((trade) => (
-                    <tr key={trade.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(trade.date)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {trade.company}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          trade.action === 'BUY' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {trade.action}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {trade.shares}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatCurrency(trade.price)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatCurrency(trade.total)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+
               </table>
             </div>
           )}

@@ -145,9 +145,9 @@ const adminNavigation = [
           <button
             type="button"
             onClick={() => router.push('/')}
-            className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900"
+            className="flex items-center cursor-pointer w-full px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900"
           >
-            <LogOut className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+            <LogOut className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 " />
             Logout
           </button>
         </div>

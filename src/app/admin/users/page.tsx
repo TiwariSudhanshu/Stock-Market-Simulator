@@ -1,4 +1,5 @@
 'use client';
+import AdminSidebar from '@/components/AdminSidebar';
 import React, { useEffect, useState } from 'react';
 
 export default function UsersPage() {
@@ -21,7 +22,9 @@ export default function UsersPage() {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded shadow">
+   <div className="flex">
+    <AdminSidebar/>
+     <div className="max-w-5xl mx-auto mt-10 p-6 text-black flex-grow bg-white rounded shadow">
       <h1 className="text-2xl font-bold mb-6">All Users</h1>
       {loading ? (
         <p>Loading...</p>
@@ -48,5 +51,6 @@ export default function UsersPage() {
         </table>
       )}
     </div>
+   </div>
   );
 }

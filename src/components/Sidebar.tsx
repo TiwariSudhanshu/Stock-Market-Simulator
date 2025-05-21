@@ -21,12 +21,21 @@ type SidebarProps = {
   userName?: string;
   userAvatar?: string;
 };
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-export default function Sidebar({ userName = "Jane Cooper", userAvatar = "/api/placeholder/32/32" }: SidebarProps) {
+
+export default function Sidebar({ userName = user.name, userAvatar = "https://i.pinimg.com/736x/59/af/9c/59af9cd100daf9aa154cc753dd58316d.jpg" }: SidebarProps) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
     const pathname = usePathname();
+
+
+    useEffect(()=>{
+      if(localStorage.getItem('user') === null){
+        router.push('/login');
+      }
+    },[])
 
   useEffect(() => {
     // Check if window is defined (browser environment)
@@ -66,12 +75,7 @@ export default function Sidebar({ userName = "Jane Cooper", userAvatar = "/api/p
       icon: LayoutDashboard, 
       current: pathname === '/dashboard' 
     },
-    { 
-      name: 'Market Simulation', 
-      href: '/simulation', 
-      icon: BarChart2, 
-      current: pathname === '/simulation' 
-    },
+
     { 
       name: 'Trade', 
       href: '/trade', 
@@ -84,18 +88,15 @@ export default function Sidebar({ userName = "Jane Cooper", userAvatar = "/api/p
       icon: BookOpen, 
       current: pathname === '/companies' 
     },
-    { 
-      name: 'Leaderboard', 
-      href: '/leaderboard', 
-      icon: Trophy, 
-      current: pathname === '/leaderboard' 
-    },
+    // { 
+    //   name: 'Leaderboard', 
+    //   href: '/leaderboard', 
+    //   icon: Trophy, 
+    //   current: pathname === '/leaderboard' 
+    // },
   ];
 
-  const secondaryNavigation = [
-    { name: 'Help & Resources', href: '/help', icon: HelpCircle },
-    { name: 'Settings', href: '/settings', icon: Settings },
-  ];
+
 
   return (
     <>
@@ -130,7 +131,7 @@ export default function Sidebar({ userName = "Jane Cooper", userAvatar = "/api/p
         <div className="flex items-center justify-between px-4 mb-6">
           <div className="flex items-center">
             <Leaf className="h-8 w-8 text-green-600" />
-            <span className="ml-2 text-xl font-semibold text-gray-900">GreenStocks</span>
+            <span className="ml-2 text-xl font-semibold text-gray-900">Imprenditore</span>
           </div>
           {isMobileView && (
             <button
@@ -183,28 +184,8 @@ export default function Sidebar({ userName = "Jane Cooper", userAvatar = "/api/p
               ))}
             </div>
           </nav>
-          
-          {/* Secondary Navigation */}
-          <div className="mt-6">
-            <div className="px-4 mb-2">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Support</h3>
-            </div>
-            <nav className="px-2 space-y-1">
-              {secondaryNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md"
-                >
-                  <item.icon
-                    className="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-5 w-5"
-                    aria-hidden="true"
-                  />
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
-          </div>
+
+      
         </div>
         
         {/* Logout */}

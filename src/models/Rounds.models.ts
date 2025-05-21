@@ -18,6 +18,6 @@ const RoundSchema: Schema = new Schema({
   timestamps: true,
 });
 
-const Round: Model<IRound> = model<IRound>('Round', RoundSchema);
+const Round: Model<IRound> = mongoose.models.Round || model<IRound>('Round', RoundSchema);
 
 export default Round;

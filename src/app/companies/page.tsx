@@ -334,7 +334,7 @@ export default function CompaniesPage() {
                     </div>
                     <input
                       type="text"
-                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                      className="block w-full pl-10 pr-3 py-2 text-black border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
                       placeholder="Search companies, tickers, sectors..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
